@@ -14,6 +14,7 @@ from chat import routing
 # from wsapp.consumers import *
 from channels.routing import ProtocolTypeRouter,URLRouter
 from chat.consumers import *
+from channels.auth import AuthMiddlewareStack
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ws.settings')
 
 application = get_asgi_application()
@@ -25,5 +26,5 @@ application = get_asgi_application()
 # "http": get_asgi_application(),     # For Http Connection
 application = ProtocolTypeRouter({
     "http":get_asgi_application(),
-    'websocket':URLRouter(routing.websocket_urlpatterns)
+    'websocket':AuthMiddlewareStack(URLRouter(routing.websocket_urlpatterns))
 })

@@ -1,0 +1,51 @@
+{% extends 'chat/base.html' %}
+    {% block head %}
+    {% endblock %}
+
+    {% block chats %}
+        {% for profile in profiles %}
+            <div class="card p-4 pl-5" >
+                <!-- <button id="{{profile.pk}}" class="card-link" onclick='goToProfile("{{profile.pk}}")'>{{profile.name|default:"NOne"}}</button> -->
+                <a  class="card-link" href="/chat/{{profile.user.pk}}">{{profile.name|default:"NOne"}}{% if profile.status %}<span id="{{profile.pk}}" >🟢</span>{% else %}
+                <span id="{{profile.pk}}" ></span>{% endif %}</a>
+            </div>
+        {% endfor %}
+    {% endblock %}
+
+    {% block content %}
+        <!-- <div class="messages">
+        </div>
+        <div class="d-flex">
+          <input type="text" class="form-control"  name="message" id="message">
+          <input type="button"value="send" onclick="sendMessage()" class="btn btn-success ">
+            </div> -->
+      <script>
+        
+            var url = `${location.host}/chats/online`;
+            if (location.protocol==="https:") 
+                url = "wss://"+url;
+            else
+                url = 'ws://'+url;
+            var websocket = new WebSocket(url)
+            websocket.onopen = function(e){
+                console.log("connected to")
+            }
+            websocket.onmessage = function(e){
+                data = JSON.parse(e.data)
+                console.log(data,data.status,)
+                element = document.getElementById(data.id)
+                if(data.status){
+                  //element.innerHTML=element.innerHTML.substring(0,element.innerHTML.length)+"🟢"
+                  element.innerHTML="🟢"
+                }
+                else{
+                  element.innerHTML=""
+                }
+            }
+            websocket.onclose = function(e){
+              console.log("DISCONNECTED")
+            }
+          
+    </script>
+    {% endblock %}
+    

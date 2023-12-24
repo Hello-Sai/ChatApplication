@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-y!8d9oj%@*cgsmnji-%9o7-39@n@jg7glg2da3h-gv#1agdszy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -84,21 +84,23 @@ DATABASES = {
 }
 
 CHANNEL_LAYERS = {
-    # 'default':{
-    #     'BACKEND':'channels_redis.core.RedisChannelLayer',
-    #     "CONFIG":{
-    #         'hosts':[('127.0.0.1',6379)]
-    #     }
-    # }
-    'default': {
-        'BACKEND': 'channels_rabbitmq.core.RabbitmqChannelLayer',
-        "CONFIG": {
-            # "hosts": [("127.0.0.1", 6379)],
-            "host": "amqp://guest:guest@127.0.0.1:8000/"
-        },
-    },
+    'default':{
+        'BACKEND':'channels_redis.core.RedisChannelLayer',
+        "CONFIG":{
+            'hosts':[('127.0.0.1',6379)]
+        }
+    }
+    # 'default': {
+    #     'BACKEND': 'channels_rabbitmq.core.RabbitmqChannelLayer',
+    #     "CONFIG": {
+    #         # "hosts": [("127.0.0.1", 6379)],
+    #         "host": "amqp://guest:guest@127.0.0.1:8000/"
+    #     },
+    # },
 }
-
+CORS_ALLOWED_ORIGINS = [
+    'http://192.168.43.33:8000'
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -131,6 +133,11 @@ USE_I18N = True
 USE_TZ = True
 
 
+CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app','https://*.127.0.0.1','https://*.devtunnels.ms']
+
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
@@ -140,3 +147,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# SMS_BACKEND = 'sms.backends.dummy.SmsBackend'
+# SMS_BACKEND = 'sms.backends.locmem.SmsBackend'
+# SMS_BACKEND = 'sms.backends.filebased.SmsBackend'
+# SMS_FILE_PATH = '/static/'
