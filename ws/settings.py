@@ -31,15 +31,15 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'wsapp',
-    'chat'
+    'chat.apps.ChatConfig',
+    'channels',
+    
 ]
 
 MIDDLEWARE = [
@@ -70,7 +70,7 @@ TEMPLATES = [
     },
 ]
 
-#WSGI_APPLICATION = 'ws.wsgi.application'
+# WSGI_APPLICATION = 'ws.wsgi.application'
 ASGI_APPLICATION = 'ws.asgi.application'
 
 # Database
@@ -142,7 +142,10 @@ LOGIN_URL = '/'
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATIC_ROOT = BASE_DIR / 'assets'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # Global static files  # Static files within the app
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 

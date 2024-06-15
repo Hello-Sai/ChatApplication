@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from chat import views
 from django.views.generic.base import TemplateView
 from django.contrib.auth.views import LogoutView
 urlpatterns = [
@@ -7,10 +7,10 @@ urlpatterns = [
     path('chats',views.chats,name="chats"),
     path('chat/<id>',views.chat,name="chat"),
     path('register',views.register,name="register"),
-    path('logout',LogoutView.as_view(),name="logout"),
+    # path('logout',LogoutView.as_view(),name="logout"),
+    path('logout',views.logoutview,name="logout"),
 
-
-    path('sample/base',TemplateView.as_view(template_name = 'chat/sample/base.html')),
-    path('sample/home',TemplateView.as_view(template_name = 'chat/sample/home.html')),
-    path('sample/another',TemplateView.as_view(template_name = 'chat/sample/another.html')),
+    # path('sample/base',TemplateView.as_view(template_name = 'chat/sample/base.html')),
+    # path('sample/home',TemplateView.as_view(template_name = 'chat/sample/home.html')),
+    # path('sample/another',TemplateView.as_view(template_name = 'chat/sample/another.html')),
 ]

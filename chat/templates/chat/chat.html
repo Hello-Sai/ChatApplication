@@ -1,21 +1,51 @@
 {% extends 'chat/base.html' %}
+{% load static %}
 {% block head %}
 <style>
   #chatContainer {
     height: 600px;
     overflow-y: auto;
     border: 1px solid #ccc;
-    padding: 10px;
+   /* padding: 5px;*/
     margin-bottom: 20px;
+    /*scroll-behavior: smooth;*/
+    transition: 0s;
+
 }
+.status-indicator {
+  width: 13px;  /* Adjust the size as needed */
+  height: 13px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 5px;
+  position: relative;
+  top:2px;  /* Adjust spacing as needed */
+  background-color: greenyellow;
+}
+.notification-badge {
+  width: 20px;
+  text-align: center;
+  color: #fff;
+  background-color: green;
+  border-radius: 50%;
+}
+/*#chatContainer{
+  transition: 200ms linear 50ms;
+}*/
 </style>
+<script src="{% static 'js/chats.js' %}"></script>
 {% endblock %}
 {% block chats %}
 {% for profile in profiles %}
 <div class="card p-4 pl-5" >
   <!-- <button id="{{profile.pk}}" class="card-link"href="/chat/{{profile.user.pk}}" onclick='goToProfile("{{profile.pk}}")'>{{profile.name|default:"NOne"}}</button> -->
-  <a  class="card-link" id="profile_{{profile.pk}}" href="{% url 'chat' profile.user.pk %}" >{{profile.name|default:"NOne"}}{% if profile.status %}<span id="{{profile.pk}}" >🟢</span>{% else %}
-  <span id="{{profile.pk}}" ></span>{% endif %}</a>
+  <a  class="card-link" id="profile_{{profile.pk}}" href="{% url 'chat' profile.pk %}" >{{profile.name|default:"NOne"}}
+    {% if profile.status %}
+    <span class="status-indicator" id="{{profile.pk}}" ></span>
+    {% else %}
+  <span id="{{profile.pk}}" ></span>{% endif %}
+  <span style="float: right;" id="notification-{{ profile.pk }}" class="notification-badge"></span>
+</a>
 </div>
 {% endfor %}
 {% endblock %}
@@ -23,11 +53,11 @@
 
 {% block content %}
 
-<div id="chatContainer" class="container">
+<div id="chatContainer" onclick="window.location.href='#message'"  class="container">
   {% for message in messagess %}
   {% if message.sender == user.profile %}
-  <div class="card-text  m-3 text-right">
-    <span class = "bg-success text-light pt-2 pb-2 pl-3 pr-3 rounded-pill">{{message.message}}</span>
+  <div  class="card-text  m-3 text-right">
+    <span  class = "bg-success text-light pt-2 pb-2 pl-3 pr-3 rounded-pill">{{message.message}}</span>
   </div>
   {% else %} 
   
@@ -40,87 +70,110 @@
 </div>
 
 <!-- <div class="container text-center p-3 col-md-4"> -->
-  <div class="d-flex">
+  <div class="d-flex" >
     <input type="text" class="form-control"  name="message" id="message">
     <input type="button"value="send" onclick="sendMessage()" class="btn btn-success ">
   </div>
-  
+  <!-- <script src="{% static 'js/notify.js' %}"></script> -->
+
+  <script src="{% static 'js/notify.js' %}"></script>
+  {{profile.pk|json_script:'profile_id'}}
+  <!-- <script>
+    var notification_socket = new WebSocket(`ws://${location.host}/chats/notifications`);
+        notification_socket.onopen = function(e){
+        console.log('connected')
+        }
+
+        notification_socket.onmessage = function(e){
+        console.log(e.data)
+        data = JSON.parse(e.data)
+        data.forEach(item => {
+          const profileId = item.chat.user_id;
+          const notificationCount = item.chat.count;
+          const notificationBadge = document.getElementById(`notification-${profileId}`)
+          console.log(notificationBadge)
+          if (notificationBadge) {
+              notificationBadge.textContent = notificationCount > 0 ? notificationCount : '';
+          }
+        });
+
+        //document.getElementById("notification_count").innerHTML += `<h1>${data['count']}`
+        }
+  </script> -->
   <script>
-    var url = `${location.host}/chats/online`;
-            if (location.protocol==="https:") 
-                url = "wss://"+url;
-            else
-                url = 'ws://'+url;
-            var websocket = new WebSocket(url)
-            websocket.onopen = function(e){
-                console.log("connected to")
-            }
-            websocket.onmessage = function(e){
-                data = JSON.parse(e.data)
-                console.log(data,data.status,)
-                element = document.getElementById(data.id)
-                if(data.status){
-                  //element.innerHTML=element.innerHTML.substring(0,element.innerHTML.length)+"🟢"
-                  element.innerHTML="🟢"
-                }
-                
-            }
-            websocket.onclose = function(e){
-              
-              console.log("DISCONNECTED")
-            }
-          
-/*    document.getElementById('{{profile.name}}').style='background:green;'
-    document.getElementById('{{profile.pk}}').style = 'color:white'
-    document.getElementById('{{profile.pk}}').classList.replace('text-success','text-white')*/
-    /*var messages = JSON.parse(document.getElementById('json-messages').textContent)
-    messages.forEach((m) =>{
-      updatemsg(m.message,m.sender)
-      console.log(m,m.sender)
-    })*/
-      var  url = `${location.host}/chat/{{profile.user.id}}`
-      console.log(location.hostname,location.protocol)
-      if (location.protocol==="https:") 
-        url = "wss://"+url;
-      else
-        url = 'ws://'+url;
-        var websocket = new WebSocket(url)
-        console.log(websocket)
-        websocket.onopen = function(e){
-            console.log("connected",websocket)
+    var al_messages = document.getElementById('chatContainer')
+          al_messages.scrollTop = al_messages.scrollHeight
+    var url = `ws://${location.host}/chat/{{ profile.id }}`;
+
+        console.log(location.hostname, location.protocol);
+
+        if (location.protocol === "https:") {
+          url = `wss://${location.host}/chat/{{ profile.id }}`;
+        } else {
+          url = `ws://${location.host}/chat/{{ profile.id }}`;
         }
-        websocket.onmessage = function(e){
-            console.log(e.data)
-            data = JSON.parse(e.data)
-            if(data?.message){
-              updatemsg(data.message,data.sender)
-            }
+
+        var websocket = new WebSocket(url);
+
+        websocket.onopen = function(e) {
+          console.log("connected", websocket);
+        };
+
+        websocket.onmessage = function(e) {
+          console.log(e.data);
+          var data = JSON.parse(e.data);
+          if (data?.message) {
+            updatemsg(data.message, data.sender);
+          }
+        };
+
+        websocket.onclose = function(e) {
+          console.log("Connection closed");
+        };
+
+        function sendMessage() {
+          var message = document.getElementById('message').value.trim();
+          if (message) {
+            console.log("profile id")
+            websocket.send(JSON.stringify({
+              'message': message,
+              'sender': '{{ user.profile.pk }}',
+              'recepient': '{{ profile.pk }}'
+            }));
+          }
+          al_messages.scrollTo({
+            top: al_messages.scrollHeight,
+            behavior: 'smooth'
+          });
         }
-        websocket.onclose = function(e){
-            console.log(e)
+
+        function updatemsg(message, sender) {
+          var messageHtml = `
+            <div class="card-text m-3 text-left">
+              <span class="bg-primary text-light pt-2 pb-2 pl-3 pr-3 rounded-pill">${message}</span>
+            </div>`;
+
+          var senderHtml = `
+            <div class="card-text m-3 text-right">
+              <span class="bg-success text-light pt-2 pb-2 pl-3 pr-3 rounded-pill">${message}</span>
+            </div>`;
+
+          var chatContainer = document.querySelector('#chatContainer');
+          if (sender == '{{ user.profile.pk}}') {
+            chatContainer.innerHTML += senderHtml;
+          } else {
+            chatContainer.innerHTML += messageHtml;
+          }
+          document.getElementById('message').value = "";
         }
-        function sendMessage(){
-          var message = document.getElementById('message').value;
-          message = message.trim()  
-          if(message)
-            websocket.send(JSON.stringify({'message':message,'sender':'{{user}}','recepient':'{{profile.pk}}'}));
-          
-        }
-        function updatemsg(message,sender)
-        {
-            var lhtml = `
-              <div class="card-text  m-3 text-left"><span class = "bg-primary text-light  pt-2 pb-2 pl-3 pr-3 rounded-pill ">${message}</span></div>`;
-            var rhtml = ` 
-              <div class="card-text  m-3 text-right"><span class = "bg-success text-light pt-2 pb-2 pl-3 pr-3 rounded-pill">${message}</span></div>`; 
-            if(sender==='{{user.profile}}')
-              document.querySelector('#chatContainer').innerHTML+=rhtml;
-            else
-              document.body.querySelector('#chatContainer').innerHTML+=lhtml;
-            document.getElementById('message').value=""
-        }
-        document.getElementById('message').addEventListener('keydown',function(e){
-           if(e.key=="Enter")
+
+        document.getElementById('message').addEventListener('keydown', function(e) {
+          if (e.key === "Enter") {
             sendMessage();
-        })
+          }
+        });
+          
   </script>
+
+     
 {% endblock %}

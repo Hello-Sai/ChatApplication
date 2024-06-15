@@ -1,13 +1,44 @@
 {% extends 'chat/base.html' %}
+{% load static %}
     {% block head %}
+    <style>
+      .status-indicator {
+        width: 13px;  /* Adjust the size as needed */
+        height: 13px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-left: 5px;
+        position: relative;
+        top:2px;  /* Adjust spacing as needed */
+        background-color: greenyellow;
+      }
+    .notification-badge {
+      width: 25px;
+      text-align: center;
+      color: #fff;
+      background-color: green;
+      border-radius: 50%;
+  }
+  
+    </style>
     {% endblock %}
 
     {% block chats %}
+        <div class="notifications">
+          <div id="notification_count" class="p-2"></div>
+        </div>
         {% for profile in profiles %}
             <div class="card p-4 pl-5" >
                 <!-- <button id="{{profile.pk}}" class="card-link" onclick='goToProfile("{{profile.pk}}")'>{{profile.name|default:"NOne"}}</button> -->
-                <a  class="card-link" href="/chat/{{profile.user.pk}}">{{profile.name|default:"NOne"}}{% if profile.status %}<span id="{{profile.pk}}" >🟢</span>{% else %}
-                <span id="{{profile.pk}}" ></span>{% endif %}</a>
+                <a  class="card-link" href="/chat/{{profile.pk}}">{{profile.name|default:"NOne"}}
+                  {% if profile.status %}
+                  <span class="status-indicator" id="{{profile.pk}}" ></span>
+                  {% else %}
+                  <span id="{{profile.pk}}" ></span>
+                  {% endif %}
+                <span style="float: right;" id="notification-{{ profile.pk }}" class="notification-badge">
+              </span>
+                  </a>
             </div>
         {% endfor %}
     {% endblock %}
@@ -19,33 +50,8 @@
           <input type="text" class="form-control"  name="message" id="message">
           <input type="button"value="send" onclick="sendMessage()" class="btn btn-success ">
             </div> -->
-      <script>
-        
-            var url = `${location.host}/chats/online`;
-            if (location.protocol==="https:") 
-                url = "wss://"+url;
-            else
-                url = 'ws://'+url;
-            var websocket = new WebSocket(url)
-            websocket.onopen = function(e){
-                console.log("connected to")
-            }
-            websocket.onmessage = function(e){
-                data = JSON.parse(e.data)
-                console.log(data,data.status,)
-                element = document.getElementById(data.id)
-                if(data.status){
-                  //element.innerHTML=element.innerHTML.substring(0,element.innerHTML.length)+"🟢"
-                  element.innerHTML="🟢"
-                }
-                else{
-                  element.innerHTML=""
-                }
-            }
-            websocket.onclose = function(e){
-              console.log("DISCONNECTED")
-            }
-          
-    </script>
+            
+      <script src="{% static 'js/notify.js' %}"></script>
+      <script src="{% static 'js/chats.js' %}"> </script>
     {% endblock %}
-    
+{{profile.id|json_script:'profileId'}}
