@@ -1,4 +1,4 @@
+psycopg2-binary==2.9.6
 channels==3.0.5
 Django
 uvicorn
-psycopg2-binary==2.9.6
