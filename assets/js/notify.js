@@ -7,9 +7,13 @@ const lastIndex = path.lastIndexOf('/');
 
 // Extract the last segment using slice
 const profileId = path.slice(lastIndex + 1);
-
-
-var notification_socket = new WebSocket(`ws://${location.host}/chats/notifications`);
+var url;
+if (location.protocol === "https:") {
+    url = `wss://${location.host}/chats/notifications`;
+  } else {
+    url = `ws://${location.host}/chats/notifications`;
+  }
+var notification_socket = new WebSocket(url);
 notification_socket.onopen = function(e){
     console.log('profile',profileId)
 console.log('connected',containsOnlyDigits(profileId))
