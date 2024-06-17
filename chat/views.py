@@ -1,14 +1,14 @@
-import json
-from django.conf import settings
-from django.shortcuts import render,HttpResponse,redirect
+# import json
+# from django.conf import settings
+from django.shortcuts import render,redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.contrib.auth import login,logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.core.serializers import serialize
+# from django.core.serializers import serialize
 from chat.models import Profile,Message
-from asgiref.sync import sync_to_async
+# from asgiref.sync import sync_to_async
 from django.db.models import Q
 # Create your views here.
 

@@ -3,7 +3,7 @@ from django.shortcuts import render
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 import json
-import time
+# import time
 # Create your views here.
 
 

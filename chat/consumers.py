@@ -3,9 +3,8 @@ import json
 from channels.db import database_sync_to_async
 # from asgiref.sync import sync_to_async
 # from django.contrib.auth.models import User
-from django.db.models import Q,Count
+from django.db.models import Count
 from chat.models import Message
-from chat.serializers import ChatNotificationSerializer
 @database_sync_to_async
 def get_profile(profile_id):
     from chat.models import ChatNotification, Profile
@@ -200,9 +199,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         # return notifications
     
 
-    # @database_sync_to_async
-    # def get_chatnotification_serializer(self,notifications):
-    #     return ChatNotificationSerializer(notifications, many=True).data
     
     @database_sync_to_async
     def get_profile(self):
@@ -215,6 +211,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         # profile = await self.get_profile(my_id)
         # print(profile)
         notifications = await self.get_notifications(profile.id)
-        # serialized_data= await self.get_chatnotification_serializer(notifications)
+        # serialized_data= await self.get_chatnotification_(notifications)
         print(notifications)
         await self.send(json.dumps(notifications))

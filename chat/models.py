@@ -1,8 +1,8 @@
 # import json
-from typing import Any
+# from typing import Any
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import pre_delete,post_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync

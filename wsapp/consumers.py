@@ -1,8 +1,8 @@
-from cgitb import text
+# from cgitb import text
 import json
-from django.urls import path
+# from django.urls import path
 from channels.generic.websocket import WebsocketConsumer,AsyncWebsocketConsumer
-from asgiref.sync import async_to_sync
+# from asgiref.sync import async_to_sync
 
 class TestConsumer(WebsocketConsumer):
     def connect(self):
