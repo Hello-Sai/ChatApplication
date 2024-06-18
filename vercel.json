@@ -3,11 +3,7 @@
     "builds":[
         {
             "src":"ws/asgi.py",
-            "use":"@vercel/python",
-            "config": {
-                "installCommand": "pip install --no-cache-dir -r requirements.txt"
-            }
-            
+            "use":"@vercel/python",            
         }
     ],
     "routes":[
