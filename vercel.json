@@ -1,17 +1,4 @@
 {
-    
-    "headers": [
-        {
-        "source": "/(.*)",
-        "headers": [
-            {
-            "key": "Cache-Control",
-            "value": "no-cache"
-            }
-        ]
-        }
-    ],
-    "version":2,
     "builds":[
         {
             "src":"ws/asgi.py",
