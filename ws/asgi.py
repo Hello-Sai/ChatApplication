@@ -8,15 +8,15 @@ https://docs.djangoproject.com/en/4.0/howto/deployment/asgi/
 """
 
 import os
-import django
+# import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ws.settings')
-django.setup()
+# django.setup()
 
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 # from chat import routing
 from django.core.asgi import get_asgi_application
-from django.urls import path
+# from django.urls import path
 from chat import routing
 
 # Ensure the environment variable is set before setting up Django
