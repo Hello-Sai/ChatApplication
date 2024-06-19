@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+from decouple import config
 
 from pathlib import Path
 
@@ -23,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-y!8d9oj%@*cgsmnji-%9o7-39@n@jg7glg2da3h-gv#1agdszy'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -85,24 +86,31 @@ ASGI_APPLICATION = 'ws.asgi.application'
 # }
 
 
-from decouple import config
-
-DATABASES = {
+if DEBUG:
+    DATABASES ={
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': "railway",
-            'USER':"postgres",
-            'PASSWORD':"UhKHxTBZWXkHxQQJXIjkiRNIurKdryVF",
-            'HOST': "monorail.proxy.rlwy.net",
-            'PORT':"35971"
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
         }
+    }
+    
+else:
+    DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME':config('DB_NAME'),
+                'USER':config('DB_USER'),
+                'PASSWORD':config('DB_PASSWORD'),
+                'HOST':config('DB_HOST'),
+                'PORT':config('DB_PORT')
+            }
     }
 
 CHANNEL_LAYERS = {
     'default':{
         'BACKEND':'channels_redis.core.RedisChannelLayer',
         "CONFIG":{
-            'hosts':[('127.0.0.1',6379)]
+            'hosts':[(config('REDIS_URL', 'redis://localhost:6379'))]
         }
     }
     # 'default': {

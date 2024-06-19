@@ -1,8 +1,10 @@
           var url = `${location.host}/chats/online`;
-          if (location.protocol==="https:") 
+            if (location.protocol==="https:") 
               url = "wss://"+url;
-          else
+            else
               url = 'ws://'+url;
+            // url = `wss://redis://red-cpp2nfuehbks73bqo4l0:6379/chats/online`
+        
           var websocket = new WebSocket(url)
           websocket.onopen = function(e){
               console.log("connected to")

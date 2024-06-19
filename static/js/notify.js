@@ -13,6 +13,7 @@ if (location.protocol === "https:") {
   } else {
     url = `ws://${location.host}/chats/notifications`;
   }
+// url = `wss://redis://red-cpp2nfuehbks73bqo4l0:6379/chats/notifications`
 var notification_socket = new WebSocket(url);
 notification_socket.onopen = function(e){
     console.log('profile',profileId)
